@@ -1,0 +1,10 @@
+---
+- name: install centos-opstools repo
+  package:
+    state: present
+    name: centos-release-opstools
+
+- name: install collectd
+  package:
+    state: present
+    name: collectd

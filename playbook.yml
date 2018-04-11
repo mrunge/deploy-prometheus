@@ -1,0 +1,18 @@
+---
+- hosts: localhost
+  gather_facts: no
+
+  roles:
+    - provision
+
+- name: install collectd
+  hosts: deployment
+  roles:
+    - collectd
+
+- name: deploy prometheus
+  hosts: deployment
+  roles:
+    - docker
+    - prometheus
+

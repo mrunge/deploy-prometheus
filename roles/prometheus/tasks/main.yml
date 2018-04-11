@@ -1,0 +1,19 @@
+---
+
+- name: pull prometheus docker image
+  docker_image:
+    name: prom/prometheus
+
+- name: run prometheus in docker
+  docker_container:
+    name: prometheus
+    image: prom/prometheus
+    exposed_ports: 9090
+    published_ports: 9090:9090
+    #volumes:
+      #      - /prometheus-data:/prometheus-data
+#    command: ["/usr/bin/prometheus",
+#   "-config.file=/prometheus-data/prometheus.yml",
+#   "-storage.local.path=/prometheus-data",
+#   "-web.console.libraries=/etc/prometheus/console_libraries",
+#    "-web.console.templates=/etc/prometheus/consoles" ]
