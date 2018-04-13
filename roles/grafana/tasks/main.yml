@@ -1,0 +1,18 @@
+---
+- name: pull grafana image
+  docker_image:
+    name: grafana/grafana
+
+- name: create grafana dir
+  file:
+    state: directory
+    path: /var/lib/grafana
+
+- name: run grafana
+  docker_container:
+    name: grafana
+    image: grafana/grafana
+    exposed_ports: 3000
+    published_ports: 3000:3000
+    volumes:
+      - /var/lib/grafana:/var/lib/grafana:Z

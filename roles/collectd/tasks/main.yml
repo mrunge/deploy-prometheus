@@ -8,3 +8,20 @@
   package:
     state: present
     name: collectd
+
+- name: install collectd-write-http
+  package:
+    state: present
+    name: collectd-write_http
+
+- name: configure write_http
+  copy:
+    src: write_http.conf
+    dest: /etc/collectd.d/write_http.conf
+
+
+- name: allow collectd to connect to network
+  seboolean:
+    name: collectd_tcp_network_connect
+    state: yes
+    persistent: yes

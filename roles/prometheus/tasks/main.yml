@@ -4,16 +4,51 @@
   docker_image:
     name: prom/prometheus
 
+- name: create prometheus-data dir
+  file:
+    state: directory
+    path: /prometheus-data
+    mode: 0777
+
+- name: place prometheus config file
+  template:
+    src: prometheus.yml.j2
+    dest: /prometheus-data/prometheus.yml
+
 - name: run prometheus in docker
   docker_container:
     name: prometheus
     image: prom/prometheus
     exposed_ports: 9090
     published_ports: 9090:9090
-    #volumes:
-      #      - /prometheus-data:/prometheus-data
-#    command: ["/usr/bin/prometheus",
-#   "-config.file=/prometheus-data/prometheus.yml",
-#   "-storage.local.path=/prometheus-data",
-#   "-web.console.libraries=/etc/prometheus/console_libraries",
-#    "-web.console.templates=/etc/prometheus/consoles" ]
+    volumes:
+      - /prometheus-data:/prometheus-data:Z
+    command: [ "--config.file=/prometheus-data/prometheus.yml",
+    "--storage.tsdb.path=/prometheus-data"]
+
+- name: pull prom/collectd-exporter
+  docker_image:
+    name: prom/collectd-exporter
+
+- name: run collectd-exporter
+  docker_container:
+    name: collectd-exporter
+    image: prom/collectd-exporter
+    exposed_ports: 9103
+    published_ports: 9103:9103
+
+- name: pull prom/node-exporter
+  docker_image:
+    name: prom/node-exporter
+
+- name: run prom/node-exporter
+  docker_container:
+    name: node-exporter
+    image: prom/node-exporter
+    exposed_ports: 9100
+    published_ports: 9100:9100
+
+- name: pull prom/alertmanager
+  docker_image:
+    name: prom/alertmanager
+

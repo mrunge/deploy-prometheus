@@ -15,6 +15,7 @@
     terminate_volume: 'true'
     floating_ips:
       - '{{ node_ip }}'
+    security_groups: '{{ os_security_groups }}'
 
 - name: add node to inventory
   add_host:
@@ -24,7 +25,7 @@
     ansible_user: 'centos'
     ansible_become: True
 
-- name: remove node from ssh 
+- name: remove node from ssh
   known_hosts:
     state: absent
     name: '{{ node_ip }}'

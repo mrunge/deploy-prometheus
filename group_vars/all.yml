@@ -2,3 +2,4 @@ node_ip: 192.168.36.62
 node_name: prometheus
 os_flavor: m1.medium
 os_image: CentOS-x86_64-GenericCloud-1708
+os_security_groups: 'monitoring'
