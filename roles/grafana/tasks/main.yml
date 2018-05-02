@@ -3,10 +3,17 @@
   docker_image:
     name: grafana/grafana
 
+- name: create grafana user
+  user:
+    name: grafana
+    uid: 472
+    state: present
+
 - name: create grafana dir
   file:
     state: directory
     path: /var/lib/grafana
+    owner: grafana
 
 - name: run grafana
   docker_container:
@@ -16,3 +23,4 @@
     published_ports: 3000:3000
     volumes:
       - /var/lib/grafana:/var/lib/grafana:Z
+    user: grafana

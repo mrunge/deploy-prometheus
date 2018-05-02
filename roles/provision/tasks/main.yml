@@ -29,3 +29,10 @@
   known_hosts:
     state: absent
     name: '{{ node_ip }}'
+
+- name: wait until ssh is up
+  wait_for:
+    host: '{{ node_ip }}'
+    timeout: 300
+    port: 22
+    delay: 20

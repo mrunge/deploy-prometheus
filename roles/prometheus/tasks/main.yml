@@ -29,6 +29,7 @@
 - name: pull prom/collectd-exporter
   docker_image:
     name: prom/collectd-exporter
+  when: use_collectd_exporter
 
 - name: run collectd-exporter
   docker_container:
@@ -36,6 +37,7 @@
     image: prom/collectd-exporter
     exposed_ports: 9103
     published_ports: 9103:9103
+  when: use_collectd_exporter
 
 - name: pull prom/node-exporter
   docker_image:

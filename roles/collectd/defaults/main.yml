@@ -1,0 +1,4 @@
+---
+# either use prometheus collectd exporter (when set to True), or
+# collectd-write_prometheus plugin (when set to False)
+use_collectd_exporter: False

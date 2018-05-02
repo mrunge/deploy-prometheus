@@ -4,6 +4,16 @@
     state: present
     name: centos-release-opstools
 
+- name: add yum-copr plugin
+  package:
+    state: present
+    name: yum-plugin-copr
+  when: not use_collectd_exporter
+
+- name: enable mrunges collectd copr
+  shell: yum -y copr enable mrunge/collectd-stuff
+  when: not use_collectd_exporter
+
 - name: install collectd
   package:
     state: present
@@ -13,15 +23,47 @@
   package:
     state: present
     name: collectd-write_http
+  when: use_collectd_exporter
 
 - name: configure write_http
   copy:
     src: write_http.conf
     dest: /etc/collectd.d/write_http.conf
+  when: use_collectd_exporter
 
+- name: enable opstools-testing
+  yum_repository:
+    name: opstools-testing
+    description: repo for opstools test builds
+    enabled: yes
+    baseurl: http://buildlogs.centos.org/centos/7/opstools/$basearch/
+    gpgcheck: no
+
+- name: enable collectd-write-prometheus
+  package:
+    state: present
+    name: collectd-write_prometheus
+  when: not use_collectd_exporter
+
+- name: disable selinux if using collectd-write_prometheus
+  selinux:
+    state: disabled
+  when: not use_collectd_exporter
+
+
+# provide some sample plugins to generate output
+- name: install collectd-disk
+  package:
+    state: present
+    name: collectd-disk
 
 - name: allow collectd to connect to network
   seboolean:
     name: collectd_tcp_network_connect
     state: yes
     persistent: yes
+
+- name: start collectd
+  service:
+    name: collectd
+    state: started
