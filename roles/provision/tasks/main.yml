@@ -1,5 +1,17 @@
 ---
 
+- name: provision storage
+  os_volume:
+    state: present
+    auth:
+      auth_url: "{{ lookup('env', 'OS_AUTH_URL') }}"
+      username: "{{ lookup('env','OS_USERNAME') }}"
+      password: "{{ lookup('env','OS_PASSWORD') }}"
+      project_name: "{{ lookup('env','OS_TENANT_NAME') }}"
+    display_name: "prometheus_volume"
+    size: 20
+
+
 - name: provision vm
   os_server:
     state: present
@@ -15,6 +27,7 @@
     terminate_volume: 'true'
     floating_ips:
       - '{{ node_ip }}'
+    volumes: 'prometheus_volume'
     security_groups: '{{ os_security_groups }}'
 
 - name: add node to inventory

@@ -1,18 +1,13 @@
 ---
+- name: update centos-release to latest
+  package:
+    name: centos-release
+    state: latest
+
 - name: install centos-opstools repo
   package:
     state: present
     name: centos-release-opstools
-
-- name: add yum-copr plugin
-  package:
-    state: present
-    name: yum-plugin-copr
-  when: not use_collectd_exporter
-
-- name: enable mrunges collectd copr
-  shell: yum -y copr enable mrunge/collectd-stuff
-  when: not use_collectd_exporter
 
 - name: install collectd
   package:
@@ -31,14 +26,6 @@
     dest: /etc/collectd.d/write_http.conf
   when: use_collectd_exporter
 
-- name: enable opstools-testing
-  yum_repository:
-    name: opstools-testing
-    description: repo for opstools test builds
-    enabled: yes
-    baseurl: http://buildlogs.centos.org/centos/7/opstools/$basearch/
-    gpgcheck: no
-
 - name: enable collectd-write-prometheus
   package:
     state: present
@@ -47,7 +34,8 @@
 
 - name: disable selinux if using collectd-write_prometheus
   selinux:
-    state: disabled
+    state: permissive
+    policy: targeted
   when: not use_collectd_exporter
 
 
@@ -62,6 +50,13 @@
     name: collectd_tcp_network_connect
     state: yes
     persistent: yes
+  when: '"{{ansible_selinux.status}}" == "enabled"'
+
+- name: listen to connections on the net
+  template:
+    src: 10-network-listen.conf.j2
+    dest: "/etc/collectd.d/10-network-listen.conf"
+  when: collectd_network_listen
 
 - name: start collectd
   service:

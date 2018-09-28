@@ -3,3 +3,6 @@ node_name: prometheus
 os_flavor: m1.medium
 os_image: CentOS-x86_64-GenericCloud-1708
 os_security_groups: 'monitoring'
+use_collectd_exporter: False
+# add collectd network listen
+collectd_network_listen: True

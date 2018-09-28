@@ -1,0 +1,28 @@
+---
+
+- name: pull alertmanager docker image
+  docker_image:
+    name: prom/alertmanager
+
+- name: create prometheus-data dir
+  file:
+    state: directory
+    path: /alertmanager-data
+    mode: 0777
+
+- name: place alertmanager config file
+  template:
+    src: prometheus.yml.j2
+    dest: /prometheus-data/prometheus.yml
+
+- name: run alertmanager in docker
+  docker_container:
+    name: alertmanaer
+    image: prom/alertmanager
+    exposed_ports: 9090
+    published_ports: 9090:9090
+    volumes:
+      - /alertmanager-data:/alertmanager-data:Z
+    command: [ "--config.file=/prometheus-data/prometheus.yml",
+    "--storage.tsdb.path=/prometheus-data"]
+

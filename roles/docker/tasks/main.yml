@@ -1,4 +1,29 @@
 ---
+
+- name: install lvm tools
+  package:
+    name: lvm2
+    state: present
+
+- name: create volume groupd
+  lvg:
+    vg: dockerstore
+    pvs: /dev/vdb
+    state: present
+
+- name: configure storage for docker
+  lineinfile:
+    line: "VG=dockerstore"
+    state: present
+    path: '/etc/sysconfig/docker-storage-setup'
+    create: yes
+
+- name: remove old overlay option
+  lineinfile:
+    line: 'STORAGE_DRIVER=overlay2'
+    state: absent
+    path: '/etc/sysconfig/docker-storage-setup'
+
 - name: deploy docker
   package:
     name: docker
