@@ -50,7 +50,7 @@
     name: collectd_tcp_network_connect
     state: yes
     persistent: yes
-  when: '"{{ansible_selinux.status}}" == "enabled"'
+  when: ansible_selinux.status == "enabled"
 
 - name: listen to connections on the net
   template:

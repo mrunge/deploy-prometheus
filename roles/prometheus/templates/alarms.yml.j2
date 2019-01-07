@@ -1,0 +1,19 @@
+groups:
+- name: cpu_is_burning
+  rules:
+  - alert: cpu_burn
+    expr: avg_over_time(collectd_load_longterm{exported_instance="prometheus.berg.ol"}[30s]) > 0.8
+    for: 10m
+    labels:
+      severity: pager
+    annotations:
+      summary: high cpu load
+- name: ping
+  rules:
+  - alert: network
+    expr: avg_over_time(collectd_ping[30s]) > 19.1
+    for: 3m
+    labels:
+      severity: pager
+    annotations:
+      summary: network slow

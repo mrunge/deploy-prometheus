@@ -16,4 +16,5 @@
     - docker
     - prometheus
     - grafana
+    - alertmanager
 

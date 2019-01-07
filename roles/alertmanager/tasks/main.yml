@@ -12,17 +12,16 @@
 
 - name: place alertmanager config file
   template:
-    src: prometheus.yml.j2
-    dest: /prometheus-data/prometheus.yml
+    src: alertmanager.yml.j2
+    dest: /alertmanager-data/alertmanager.yml
 
 - name: run alertmanager in docker
   docker_container:
     name: alertmanaer
     image: prom/alertmanager
-    exposed_ports: 9090
-    published_ports: 9090:9090
+    exposed_ports: 9093
+    published_ports: 9093:9093
     volumes:
       - /alertmanager-data:/alertmanager-data:Z
-    command: [ "--config.file=/prometheus-data/prometheus.yml",
-    "--storage.tsdb.path=/prometheus-data"]
+    command: [ "--config.file=/alertmanager-data/alertmanager.yml",]
 

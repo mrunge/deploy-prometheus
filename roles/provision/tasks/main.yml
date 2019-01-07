@@ -29,6 +29,7 @@
       - '{{ node_ip }}'
     volumes: 'prometheus_volume'
     security_groups: '{{ os_security_groups }}'
+  register: provision
 
 - name: add node to inventory
   add_host:
@@ -42,6 +43,7 @@
   known_hosts:
     state: absent
     name: '{{ node_ip }}'
+  when: provision.changed|default(false) == "true"
 
 - name: wait until ssh is up
   wait_for:
@@ -49,3 +51,4 @@
     timeout: 300
     port: 22
     delay: 20
+  when: provision.changed|default(false) == "true"
