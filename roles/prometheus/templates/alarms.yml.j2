@@ -17,3 +17,22 @@ groups:
       severity: pager
     annotations:
       summary: network slow
+- name: openstack-api slow
+  rules:
+  - alert: openstack-api
+    expr: avg_over_time(collectd_curl_response_time[30s]) > 0.2
+    for: 3m
+    labels:
+      severity: pager
+    annotations:
+      summary: openstack api slow
+- name: fs running over
+  rules:
+  - alert: fs full
+    expr: predict_linear(collectd_df_df_complex{df="root",type="free"}[4h], 4* 3600) < 0
+    for: 30m
+    labels:
+      severity: pager
+    annotations:
+      summary: file system will be full in less than 4 hrs
+

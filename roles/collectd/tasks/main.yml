@@ -32,6 +32,11 @@
     name: collectd-write_prometheus
   when: not use_collectd_exporter
 
+- name: load df plugin
+  copy:
+    src: df.conf
+    dest: /etc/collectd.d/df.conf
+
 - name: disable selinux if using collectd-write_prometheus
   selinux:
     state: permissive
@@ -44,6 +49,12 @@
   package:
     state: present
     name: collectd-disk
+
+- name: load disk plugin
+  copy:
+    src: disk.conf
+    dest: /etc/collectd.d/disk.conf
+
 
 - name: allow collectd to connect to network
   seboolean:
