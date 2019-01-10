@@ -2,7 +2,7 @@ groups:
 - name: cpu_is_burning
   rules:
   - alert: cpu_burn
-    expr: avg_over_time(collectd_load_longterm{exported_instance="prometheus.berg.ol"}[30s]) > 0.8
+    expr: avg(avg_over_time(collectd_load_longterm[1m])) by (exported_instance) > 0.9
     for: 10m
     labels:
       severity: pager
@@ -35,4 +35,13 @@ groups:
       severity: pager
     annotations:
       summary: file system will be full in less than 4 hrs
+- name: memory low
+  rules:
+  - alerts: memory full
+    expr: sum(predict_linear(collectd_memory{memory=~"free|cached|buffered"}[30m],1800))by (exported_instance) < 0
+    for: 30m
+    labels:
+      severity: pager
+    annotations:
+      summary: memory is going to be completely consumed.
 
